@@ -7,12 +7,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
     @GetMapping("/")
-    public void index() {
-        System.out.println("index() 메서드 호출됨!");
+    @ResponseBody
+    public String index() {
+        return "안녕하세요 sbb에 오신 것을 환영합니다.";
     }
 
     @GetMapping("/hello")
-    public void hello() {
-        System.out.println("hello() 메서드 호출됨!");
+    @ResponseBody
+    public String hello() {
+        return "hello";
     }
 }
