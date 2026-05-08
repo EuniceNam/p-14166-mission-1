@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Transactional
 class PostRepositoryTest {
     @Autowired
     private QuestionRepository questionRepository;
@@ -64,7 +65,6 @@ class PostRepositoryTest {
 
     @Test
     @DisplayName("수정")
-    @Transactional
     void t6() {
         Question question = questionRepository.findById(1).get();
         assertThat(question).isNotNull();
@@ -78,7 +78,6 @@ class PostRepositoryTest {
 
     @Test
     @DisplayName("삭제")
-    @Transactional
     void t7() {
         assertThat(questionRepository.count()).isEqualTo(2);
 
@@ -90,7 +89,6 @@ class PostRepositoryTest {
 
     @Test
     @DisplayName("답변 생성")
-    @Transactional
     void t8() {
         Question question = questionRepository.findById(2).get();
 
@@ -104,7 +102,6 @@ class PostRepositoryTest {
 
     @Test
     @DisplayName("답변 생성 by oneToMany")
-    @Transactional
     void t9() {
         Question question = questionRepository.findById(2).get();
 
@@ -121,5 +118,35 @@ class PostRepositoryTest {
 
         // 트랜잭션이 끝나기 전에 미리 INSERT/UPDATE 등의 SQL 쿼리를 DB에 전송(커밋은 안 함), 출력 로그에서 해당 쿼리 확인 (이후 설정에 따라 롤백됨)
         questionRepository.flush();
+    }
+
+    @Test
+    @DisplayName("답변 조회")
+    void t10() {
+        Answer answer = answerRepository.findById(1).get();
+
+        assertThat(answer.getId()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("답변 조회 by oneToMany")
+    void t11() {
+        Question question = questionRepository.findById(2).get();
+
+        List<Answer> answers = question.getAnswers();
+        assertThat(answers).hasSize(1);
+
+        Answer answer = answers.get(0);
+        assertThat(answer.getContent()).isEqualTo("네 자동으로 생성됩니다.");
+    }
+
+    @Test
+    @DisplayName("findAnswer by question")
+    void t12() {
+        Question question = questionRepository.findById(2).get();
+
+        Answer answer1 = question.getAnswers().get(0);
+
+        assertThat(answer1.getId()).isEqualTo(1);
     }
 }
