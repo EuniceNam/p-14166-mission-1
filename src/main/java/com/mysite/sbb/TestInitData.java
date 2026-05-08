@@ -26,6 +26,7 @@ public class TestInitData {
     public ApplicationRunner testInitDataApplicationRunner() {
         return args -> {
             self.work1();
+            self.work2();
         };
     }
 
@@ -47,5 +48,17 @@ public class TestInitData {
         q2.addAnswer("네 자동으로 생성됩니다.");
 
         questionRepository.save(q2); // 두번째 질문 저장
+    }
+
+    @Transactional
+    void work2() {
+        if (questionRepository.count() > 30) return;
+        for (int i = 0; i < 30; i++) {
+            Question q1 = new Question();
+            q1.setSubject("새 질문");
+            q1.setContent("질문 내용");
+            q1.setCreateDate(LocalDateTime.now());
+            questionRepository.save(q1);
+        }
     }
 }
