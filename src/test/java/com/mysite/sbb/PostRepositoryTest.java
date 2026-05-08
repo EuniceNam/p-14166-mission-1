@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -46,5 +47,41 @@ class PostRepositoryTest {
     void t4() {
         Question question = questionRepository.findBySubjectAndContent("sbb가 무엇인가요?", "sbb에 대해서 알고 싶습니다.").get();
         assertThat(question.getId()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("findBySubjectLike")
+    void t5() {
+        List<Question> questions = questionRepository.findBySubjectLike("sbb%");
+
+        Question question = questions.get(0);
+        assertThat(question.getSubject()).isEqualTo("sbb가 무엇인가요?");
+    }
+
+
+    @Test
+    @DisplayName("수정")
+    @Transactional
+    void t6() {
+        Question question = questionRepository.findById(1).get();
+        assertThat(question).isNotNull();
+
+        question.setSubject("수정된 제목");
+        questionRepository.save(question);
+
+        Question foundQuestion = questionRepository.findBySubject("수정된 제목").get();
+        assertThat(foundQuestion).isNotNull();
+    }
+
+    @Test
+    @DisplayName("삭제")
+    @Transactional
+    void t7() {
+        assertThat(questionRepository.count()).isEqualTo(2);
+
+        Question question = questionRepository.findById(1).get();
+        questionRepository.delete(question);
+
+        assertThat(questionRepository.count()).isEqualTo(1);
     }
 }
