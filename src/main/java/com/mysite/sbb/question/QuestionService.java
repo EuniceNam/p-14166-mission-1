@@ -15,4 +15,14 @@ public class QuestionService {
     public List<Question> getList() {
         return questionRepository.findAll();
     }
+
+    public Question getQuestion(int id) {
+        Optional<Question> opQuestion = questionRepository.findById(id);
+
+        if (opQuestion.isPresent()) {
+            return opQuestion.get();
+        } else {
+            throw new DataNotFoundException("question not found");
+        }
+    }
 }
