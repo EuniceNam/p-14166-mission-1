@@ -7,14 +7,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MainController {
     @GetMapping("/")
-    @ResponseBody
     public String index() {
-        return "안녕하세요 sbb에 오신 것을 환영합니다.";
-    }
-
-    @GetMapping("/hello")
-    @ResponseBody
-    public String hello() {
-        return "hello";
+        // spring-webmvc 내의 org.springframework.web.servlet 하위 클래스가 redirect 처리.
+        // DispatcherServlet이 ViewResolver에 넘기고 redirect: 처리.
+        return "redirect:/question/list";
     }
 }
